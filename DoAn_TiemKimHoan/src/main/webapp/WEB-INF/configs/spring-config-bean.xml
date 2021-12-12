@@ -1,0 +1,71 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+   <bean id="dateFormat" class="java.text.SimpleDateFormat">
+        <constructor-arg value="yyyy-MM-dd" />
+    </bean>
+
+   
+	<bean id="user" class="ptithcm.bean.User">
+		<property name="username" value="admin" />
+		<property name="password" value="0" />
+	</bean>
+<!-- 	<bean id="nv" class="ptithcm.bean.beanNhanVien">
+		<property name="sdt" value="" />
+		<property name="hoTen" value="" />
+		<property name="ngaySinh" value="" />
+		<property name="email" value="" />
+		<property name="cmnd" value="Nnononono" />
+		<property name="gioiTinh" value="true" />
+	</bean>
+	<bean id="kh" class="ptithcm.bean.beanKhachHang">
+		<property name="sdt" value="" />
+		<property name="hoTen" value="" />
+		<property name="ngaySinh" value="2000-01-31" />
+		<property name="diaChi" value="Nnononono" />
+		<property name="danhGiaTiemNang" value="1" />
+	</bean>
+	<bean id="dv" class="ptithcm.bean.beanDichVu">
+		<property name="maDichVu" value="2" />
+		<property name="tenDichVu" value="Son" />
+	</bean>
+	<bean id="km" class="ptithcm.bean.beanKhuyenMai">
+		<property name="maGiam" value="" />
+		<property name="ngayBatDau" value="" />
+		<property name="ngayKetThuc" value="" />
+	</bean> -->
+
+	<bean id="path" class="ptithcm.bean.BasePath">
+		<property name="pathName" value="src\main\webapp\assets\Images\SanPham" />
+	</bean>
+
+	
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- maxUploadSize=20MB -->
+		<property name="maxUploadSize" value="20971520" />
+	</bean>
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="465" />
+		<property name="username" value="thanhhuyen.lyo2@gmail.com" />
+		<property name="password" value="xhfgcewwnwijveuj" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+				<prop key="mail.smtp.socketFactory.port">465</prop>
+				<prop key="mail.smtp.starttls.enable">false</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>
