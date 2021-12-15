@@ -148,8 +148,8 @@ public class MailerController {
 
 	public static List<String> getDsPhoto(String productID) {
 		//new File("src\\main\\java\\ptithcm\\controller\\MailerController.java").getAbsolutePath()
-		File folder = new File(duongdan + "\\main\\webapp\\assets\\Images\\SanPham");
-		//File folder = new File("src\\main\\webapp\\assets\\Images\\SanPham");
+//		File folder = new File(duongdan + "\\main\\webapp\\assets\\Images\\SanPham");
+		File folder = new File("C:\\Users\\HUYENKUTE\\Desktop\\DoAn_TiemKimHoan\\src\\main\\webapp\\assets\\Images\\SanPham");
 		FileFilter fileFilter = new WildcardFileFilter("*.JPG", IOCase.INSENSITIVE); 
 		
 		File[] listOfFiles = folder.listFiles(fileFilter);
@@ -167,7 +167,9 @@ public class MailerController {
 		return arrays;
 	}
 	public static String getPhotoNhanVien(String ID) {
-		File folder = new File(duongdan + "\\main\\webapp\\assets\\Images\\SanPham");
+//		File folder = new File(duongdan + "\\main\\webapp\\assets\\Images\\SanPham");
+		File folder = new File("C:\\Users\\HUYENKUTE\\Desktop\\DoAn_TiemKimHoan\\src\\main\\webapp\\assets\\Images\\NhanVien");
+		
 		FileFilter fileFilter = new WildcardFileFilter("*.JPG", IOCase.INSENSITIVE); 
 		
 		File[] listOfFiles = folder.listFiles(fileFilter);

@@ -6,7 +6,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -30,8 +33,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import Entity.*;
+import net.sf.ehcache.search.aggregator.Max;
 import ptithcm.bean.BasePath;
+import ptithcm.bean.DThuThang;
+import ptithcm.bean.DoanhThu;
 import ptithcm.bean.DsCTHD;
 import ptithcm.bean.User;
 import ptithcm.bean.UserLogin;
@@ -53,7 +60,8 @@ public class QuanlyController {
 	BasePath basePath;
 
 	static NhanVien nhanvien = null;
-
+	String noww = java.time.LocalDate.now().toString();  
+	
 	@RequestMapping(value = "dangnhap", method = RequestMethod.GET)
 	public String dangNhap(ModelMap model) {
 		model.addAttribute(new User());
@@ -65,10 +73,6 @@ public class QuanlyController {
 	public String dangNhap(ModelMap model, @ModelAttribute("user") User user) {
 
 		TaiKhoanDangNhap tk = getTKDN(user.getUsername());
-//		System.out.println("usertname:"+user.getUsername());
-//		System.out.println("usertnamePass:"+user.getPassword());
-//		System.out.println("usertname11:"+tk.getMaDangNhap());
-//		System.out.println("usertname11:"+tk.getMatKhai());
 		if (tk != null && tk.getMatKhai().trim().equals(user.getPassword().trim())
 				|| user.getUsername().equals("huyenkute") && user.getPassword().equals("123456")) {
 			nhanvien = getNhanVienFromTKDN(user.getUsername());
@@ -76,8 +80,9 @@ public class QuanlyController {
 				return "quanly/dangnhap";
 			UserLogin.tenDangNhap = user.getUsername();
 			UserLogin.matKhau = user.getPassword();
-			model.addAttribute("arrays", selectTopKhachHang(0));
-			model.addAttribute("arraysSP", selectTopSanPham(0));
+			model.addAttribute("arrays", selectTopKhachHang(15));
+			model.addAttribute("arraysSP", selectTopSanPham(15));
+			model.addAttribute("lastAC", noww);
 			return "quanly/index";
 		}
 		UserLogin.clear();
@@ -89,9 +94,52 @@ public class QuanlyController {
 	@RequestMapping("index")
 	public String index(ModelMap model) {
 //		System.out.println(user.getUsername());
-		model.addAttribute("arrays", selectTopKhachHang(0));
-		model.addAttribute("arraysSP", selectTopSanPham(0));
+		model.addAttribute("arrays", selectTopKhachHang(15));
+		model.addAttribute("arraysSP", selectTopSanPham(15));
 		return "quanly/index";
+	}
+	// ==========================================================================================================
+//	@RequestMapping("bieuDo")
+//	public String bieuDo(ModelMap model) {
+////		System.out.println(user.getUsername());
+//
+//		String namHienTai = "2021";
+//		float[] danhThuT = {0,0,0,0,0,0,0,0,0,0,0,0};//máº£ng chá»©a 12 thÃ¡ng
+//		double[] doanhThuTCN = DoanhThu.getDTThangs();
+//		int[] soLuongDV = {0,0,0,0};//4 loáº¡i dv chÃ­nh
+//		int[] soLuongKHT = {0,0,0,0,0,0,0,0,0,0,0,0};
+//		
+//		
+//		String[] fieldBDNCN = {"","",""};
+//		List <Object> thes = new ArrayList<>();
+//		model.addAttribute("thes_wtt", thes);
+//		model.addAttribute("danhThuN", Arrays.toString(danhThuT));
+//		model.addAttribute("doanhThuTCN", Arrays.toString(doanhThuTCN));
+//		model.addAttribute("fieldBDNCN", Arrays.toString(fieldBDNCN));
+//		
+////		model.addObject("bdDVT", Arrays.toString(soLuongDV));
+////		model.addObject("bdKHN", Arrays.toString(soLuongKHT));
+//		model.addAttribute("maxDT", 1200000);
+////		model.addObject("tongDV", tongDV);
+////		model.addObject("top5KHTiemNang", top5KHTiemNang);
+//		return "quanly/bieudonam";
+//	}
+	public DoanhThu layDoanhThu(int nam) {
+		DoanhThu dt = new DoanhThu();
+		dt.setNam(nam);
+		List <HoaDon> dshd = searchAllHoaDon();
+		for (HoaDon hoaDon : dshd) {
+			if(hoaDon.getNgay().getYear() == nam) {
+				int mont = hoaDon.getNgay().getMonth();
+				if(hoaDon.getLoai().equals("Nhap"))
+					dt.thangs[mont].ra =hoaDon.getTongTien();
+				else
+					dt.thangs[mont].vao =hoaDon.getTongTien();
+			 
+			}
+		}
+		return dt;
+		
 	}
 	// ==========================================================================================================
 
@@ -111,10 +159,10 @@ public class QuanlyController {
 		model.addAttribute("nhanVienDangXem", new NhanVien());
 		model.addAttribute("arrays", listNV);
 //		model.addAttribute("dsHoaDon", searchHoaDonTheoNV(nhanvien.getCmnd()));
-		model.addAttribute("display", "none");
+		model.addAttribute("display", "block");
 		return "quanly/nhanvien";
 	}
-	@RequestMapping(value = "nhanvien", params = "newPage")
+	@RequestMapping(value = "nhanvien", params = "newPage", method = RequestMethod.POST)
 	public String newnhanVien(ModelMap model) {
 		
 		List<NhanVien> listNV = getDsNhanVien();
@@ -122,7 +170,7 @@ public class QuanlyController {
 		model.addAttribute("nhanVienDangXem", new NhanVien());
 		model.addAttribute("arrays", listNV);
 		model.addAttribute("dsHoaDon", null);
-		model.addAttribute("display", "none");
+		model.addAttribute("display", "block");
 		return "quanly/nhanvien";
 	}
 //	@RequestMapping("nhanvien")
@@ -349,7 +397,7 @@ public class QuanlyController {
 		return "quanly/khachhang";
 	}
 
-	@RequestMapping(value = "khachhang", params = "btnAdd", method = RequestMethod.POST)
+	@RequestMapping(value = "khachhang", params = "btnAdd", method = RequestMethod.GET)
 	public String themKhachHang(HttpServletRequest request, ModelMap model,
 			@ModelAttribute("khachHangDangXem") KhachHang khachhang) {
 		System.out.println("ThemKhachHang" + khachhang.getHoTen());
@@ -443,7 +491,7 @@ public class QuanlyController {
 		return "quanly/khachhang";
 	}
 
-	@RequestMapping(value = "khachhang", params = "sdt")
+	@RequestMapping(value = "khachhang", params = "sdt", method = RequestMethod.POST)
 	public String timKhachHang(ModelMap model, @RequestParam("sdt") String sdt) {
 
 		System.out.println("String timKhachHang(ModelMap model, @RequestParam(\"cmnd\") String cmnd)");
@@ -1572,6 +1620,7 @@ public class QuanlyController {
 
 	@RequestMapping("thongke")
 	public String thongKe(ModelMap model) {
+		model.addAttribute("arrays", searchAllHoaDon());
 		return "quanly/thongkeHD";
 	}
 	// ==========================================================================================================
@@ -1688,8 +1737,22 @@ public class QuanlyController {
 		Query query = session.createQuery(hql);
 //		query.setParameter("id", id);
 		List<KhachHang> list = query.list();
+		
 		session.close();
-		return list;
+		for (KhachHang khachHang : list) {
+			int x = (searchHoaDonTheoKhach(khachHang.getSdt()).size());
+			khachHang.setDanhGiaTiemNang(x);
+		}
+		Collections.sort(list, new Comparator<KhachHang>() {
+		    @Override
+		    public int compare(KhachHang lhs, KhachHang rhs) {
+		        // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+		        return lhs.getDanhGiaTiemNang() < rhs.getDanhGiaTiemNang() ? -1 : (lhs.getDanhGiaTiemNang() > rhs.getDanhGiaTiemNang()) ? 1 : 0;
+		    }
+		});
+		list.subList(0, Math.min(Math.max(0,list.size()-1), topNumber));
+		return 
+				list.subList(0, Math.min(Math.max(0,list.size()-1), topNumber));
 	}
 	public List<ChiTietSanPham> selectTopSanPham(int topNumber) {
 		Session session = factory.openSession();
@@ -1700,7 +1763,20 @@ public class QuanlyController {
 //		query.setParameter("id", id);
 		List<ChiTietSanPham> list = query.list();
 		session.close();
-		return list;
+//		for (ChiTietSanPham : list) {
+//			int x = (searchHoaDonTheoKhach(khachHang.getSdt()).size());
+//			khachHang.setSlHD(x);
+//		}
+//		Collections.sort(list, new Comparator<KhachHang>() {
+//		    @Override
+//		    public int compare(KhachHang lhs, KhachHang rhs) {
+//		        // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+//		        return lhs.slHD > rhs.slHD ? -1 : (lhs.slHD < rhs.slHD) ? 1 : 0;
+//		    }
+//		});
+
+		
+		return list.subList(0, Math.min(Math.max(0,list.size()-1), topNumber));
 	}
 
 	public List<ChiTietHoaDon> getdDsCTHoaDon() {
@@ -2658,11 +2734,11 @@ public class QuanlyController {
 		Session session = factory.openSession();
 		if (session == null)
 			session = factory.openSession();
-		// String hql = "FROM HoaDon where product_name LIKE '"+ product_name + "%'";
 		String hql = "FROM HoaDon";
 		Query query = session.createQuery(hql);
 		List<HoaDon> list = query.list();
 		session.close();
+		System.out.println("Thong ke: "+list.size());
 		return list;
 	}
 
@@ -2678,6 +2754,7 @@ public class QuanlyController {
 		session.close();
 		return list;
 	}
+
 
 	public List<HoaDon> searchHoaDonTheoKhach(String idKH) {
 		Session session = factory.openSession();

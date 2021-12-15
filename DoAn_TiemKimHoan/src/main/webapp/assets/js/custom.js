@@ -15,8 +15,9 @@
 
 (function ($) {
     "use strict";
+    var chart_data;
     var mainApp = {
-
+		
         main_fun: function () {
             /*====================================
             METIS MENU 
@@ -40,24 +41,52 @@
             Morris.Bar({
                 element: 'morris-bar-chart',
                 data: [{
-                    y: '2006',
-                    a: 100,
+                    y: '1',
+                    a: 0,
                     b: 90
                 }, {
-                    y: '2009',
-                    a: 75,
+                    y: '2',
+                    a: 0,
                     b: 65
                 }, {
-                    y: '2010',
-                    a: 50,
+                    y: '3',
+                    a: 0,
                     b: 40
                 }, {
-                    y: '2011',
+                    y: '4',
+                    a: 0,
+                    b: 65
+                }, {
+                    y: '5',
+                    a: 0,
+                    b: 40
+                }, {
+                    y: '6',
+                    a: 0,
+                    b: 65
+                }, {
+                    y: '7',
                     a: 75,
                     b: 65
                 }, {
-                    y: '2012',
-                    a: 100,
+                    y: '8',
+                    a: 0,
+                    b: 65
+                }, {
+                    y: '9',
+                    a: 0,
+                    b: 65
+                }, {
+                    y: '10',
+                    a: 0,
+                    b: 65
+                }, {
+                    y: '11',
+                    a: 0,
+                    b: 90
+                }, {
+                    y: '12',
+                    a: 0,
                     b: 90
                 }],
                 xkey: 'y',
@@ -186,7 +215,7 @@
                 }],
                 xkey: 'y',
                 ykeys: ['a', 'b'],
-                labels: ['Series A', 'Series B'],
+                labels: ['Doanh Thu', 'Chi Phi'],
                 hideHover: 'auto',
                 resize: true
             });

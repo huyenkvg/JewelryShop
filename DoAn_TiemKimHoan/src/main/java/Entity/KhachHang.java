@@ -60,6 +60,8 @@ public class KhachHang implements Serializable {
     
     
 
+
+
 	public KhachHang() {
     }
 //    public KhachHang(beanKhachHang kh) {

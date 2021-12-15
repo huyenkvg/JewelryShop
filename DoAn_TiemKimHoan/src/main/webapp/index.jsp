@@ -1,87 +1,83 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page pageEncoding="utf-8"%>
+<!DOCTYPE html>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jstl/fmt_rt" prefix="fmt"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link
-	href="<c:url value='/assets/fontawesome-free-5.15.4-web/css/all.css' />"
-	rel="stylesheet">
-<!-- BOOTSTRAP STYLES-->
-<link href="<c:url value='/assets/css/bootstrap.css' />"
-	rel="stylesheet">
-<link href="<c:url value='/assets/js/morris/morris-0.4.3.min.css' />"
-	rel="stylesheet">
-<link href="<c:url value='/assets/css/custom.css' />" rel="stylesheet">
-<title>CỬA HÀNG TRANG SỨC</title>
-<base href="${pageContext.servletContext.contextPath}/">
-</head>
-</html>
 
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link href="<c:url value='/assets/css/hung.css' />" rel="stylesheet">
+<html>
 <body>
 
+<!------ Include the above in your HEAD tag ---------->
 
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-3 col-md-2"></div>
-			<div class="col-lg-6 col-md-8 login-box">
-				<div class="col-lg-12 login-key">
-					<i class="fa fa-key" style="color: white;" aria-hidden="true"></i>
-				</div>
-				<div class="col-lg-12 login-title" style="color: white;">ADMIN PANEL</div>
-
-				<div class="col-lg-12 login-form">
-					<div class="col-lg-12 login-form">
-						<form action="quanly/dangnhap.htm" method="POST"
+<div class="login-reg-panel">
+		<div class="login-info-box">
+			<h2 class="khang">Have an account?</h2>
+			<p class="khang">Lorem ipsum dolor sit amet</p>
+			<label id="label-register" for="log-reg-show">Login</label>
+			<input type="radio" name="active-log-panel" id="log-reg-show"  checked="checked">
+		</div>
+							
+		<div class="register-info-box">
+			<h2 class="khang">Don't have an account?</h2>
+			<p class="khang"	>Lorem ipsum dolor sit amet</p>
+			<label id="label-login" for="log-login-show">Register</label>
+			<input type="radio" name="active-log-panel" id="log-login-show">
+		</div>
+							
+		<div class="white-panel">
+			<div class="login-show">
+				<h2>LOGIN</h2>
+				<form action="quanly/dangnhap.htm" method="POST"
 							modelAttribute="user">
-							<div class="form-group">
-								<label class="form-control-label" style="color: white;">USERNAME</label> <input
-									type="text" path ="username" name="username" class="form-control">
-							</div>
-							<div class="form-group">
-								<label class="form-control-label" style="color: white;">PASSWORD</label> <input
-									type="password"  path="password" name="password" class="form-control" i>
-							</div>
-
-							<div class="col-lg-12 loginbttm">
-								<div class="col-lg-6 login-btm login-text">
-									<!-- Error Message -->
-								</div>
-								<div class="col-lg-6 login-btm login-button">
-									<button type="submit" class="btn btn-outline-primary">LOGIN</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-2"></div>
+				<input type="text" placeholder="Username"  name="username"/>
+				<input type="password" placeholder="Password" name="password"/>
+			 	 <button type="submit" class="btn btn-dark">Login</button>
+				
+				</form>
+				<a href="">Forgot password?</a>
+			</div>
+			<div class="register-show">
+				<h2 >REGISTER</h2>
+				<input type="text" placeholder="Email">
+				<input type="password" placeholder="Password">
+				<input type="password" placeholder="Confirm Password">
+				<input type="button" value="Register">
 			</div>
 		</div>
-		
-
 	</div>
-	<!-- /. WRAPPER  -->
-	<!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
-	<!-- JQUERY SCRIPTS -->
-	<script type="text/javascript"
-		src="<c:url value='/assets/js/jquery-1.10.2.js' />"></script>
-	<!-- BOOTSTRAP SCRIPTS -->
-	<script type="text/javascript"
-		src="<c:url value='/assets/js/bootstrap.min.js' />"></script>
-	<!-- METISMENU SCRIPTS -->
-	<script type="text/javascript"
-		src="<c:url value='/assets/js/jquery.metisMenu.js' />"></script>
-	<!-- MORRIS CHART SCRIPTS -->
-	<script type="text/javascript"
-		src="<c:url value='/assets/js/morris/raphael-2.1.0.min.js' />"></script>
-	<script type="text/javascript"
-		src="<c:url value='/assets/js/morris/morris.js' />"></script>
-	<!-- CUSTOM SCRIPTS -->
-	<script type="text/javascript"
-		src="<c:url value='/assets/js/custom.js' />"></script>
+
 </body>
+<script>
+$(document).ready(function(){
+    $('.login-info-box').fadeOut();
+    $('.login-show').addClass('show-log-panel');
+});
+
+
+$('.login-reg-panel input[type="radio"]').on('change', function() {
+    if($('#log-login-show').is(':checked')) {
+        $('.register-info-box').fadeOut(); 
+        $('.login-info-box').fadeIn();
+        
+        $('.white-panel').addClass('right-log');
+        $('.register-show').addClass('show-log-panel');
+        $('.login-show').removeClass('show-log-panel');
+        
+    }
+    else if($('#log-reg-show').is(':checked')) {
+        $('.register-info-box').fadeIn();
+        $('.login-info-box').fadeOut();
+        
+        $('.white-panel').removeClass('right-log');
+        
+        $('.login-show').addClass('show-log-panel');
+        $('.register-show').removeClass('show-log-panel');
+    }
+});
+</script>
 </html>
