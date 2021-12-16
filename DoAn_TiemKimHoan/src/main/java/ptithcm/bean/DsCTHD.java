@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import Entity.ChiTietHoaDon;
-import Entity.ChiTietHoaDonPK;
-import Entity.ChiTietSizeSp;
-import Entity.ChiTietSizeSpPK;
+import AdminEntity.ChiTietHoaDon;
+import AdminEntity.ChiTietHoaDonPK;
+import AdminEntity.ChiTietSizeSp;
+import AdminEntity.ChiTietSizeSpPK;
 
 public class DsCTHD {
 	public static HashMap<ChiTietSizeSp,ChiTietHoaDon> listCTHD  = new HashMap();

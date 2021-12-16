@@ -1,5 +1,7 @@
 eclipse.preferences.version=1
+encoding//src/main/java/Controller/MailerController.java=UTF-8
+encoding//src/main/java/Controller/QuanlyController.java=UTF-8
+encoding//src/main/java/Controller/UserLoginController.java=UTF-8
 encoding//src/main/java/Rand.java=UTF-8
+encoding//src/main/java/ptithcm/Controller/User/UserLoginController.java=UTF-8
 encoding//src/main/java/ptithcm/bean/LoginInterceptor.java=UTF-8
-encoding//src/main/java/ptithcm/controller/MailerController.java=UTF-8
-encoding//src/main/java/ptithcm/controller/QuanlyController.java=UTF-8

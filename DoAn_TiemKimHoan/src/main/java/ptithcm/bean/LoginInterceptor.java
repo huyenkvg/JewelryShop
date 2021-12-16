@@ -10,12 +10,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		System.out.println("Truoc khi vao controller");
-		if(UserLogin.tenDangNhap.equals("none")) { // cái   userlogin  cái class có static đó á nha ok
-			response.sendRedirect(request.getContextPath() + "/dangnhap.htm");// trong "" là link nếu kh hợp lệ
-			return false;
-		} 
-		//response.sendRedirect(request.getContextPath() + "/Lesson6/index.htm");
+		/*
+		 * System.out.println("Truoc khi vao controller");
+		 * if(UserLogin.tenDangNhap.equals("none")) { // cái userlogin cái class có
+		 * static đó á nha ok response.sendRedirect(request.getContextPath() +
+		 * "/dangnhap.htm");// trong "" là link nếu kh hợp lệ return false; }
+		 *///response.sendRedirect(request.getContextPath() + "/Lesson6/index.htm");
 		return true;
 	}
 	

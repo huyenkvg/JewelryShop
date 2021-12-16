@@ -20,10 +20,72 @@
 <title>CỬA HÀNG TRANG SỨC</title>
 <base href="${pageContext.servletContext.contextPath}/">
 </head>
+<script>
+		$(document).ready(function () {
+		    "use strict";
+		    var chart_data;
+		    var mainApp = {
+				
+		        main_fun: function () {
+		            /*====================================
+		            METIS MENU 
+		            ======================================*/
+		            $('#main-menu').metisMenu();
+
+		            /*====================================
+		              LOAD APPROPRIATE MENU BAR
+		           ======================================*/
+		            $(window).bind("load resize", function () {
+		                if ($(this).width() < 768) {
+		                    $('div.sidebar-collapse').addClass('collapse')
+		                } else {
+		                    $('div.sidebar-collapse').removeClass('collapse')
+		                }
+		            });
+
+		            /*====================================
+		            MORRIS BAR CHART
+		         ======================================*/
+		         	var abc = [];
+			     	<c:forEach var="c" items="${doanhthu}">
+			 	    	var yy = ${c.thang};
+			 			var aa = ${c.ra};
+			 			var bb = ${c.vao};
+			 			abc.push({"y": yy, "a": aa, "b": bb});
+			 			console.log(abc);
+			     	</c:forEach>
+		            Morris.Bar({
+		                element: 'morris-bar-chart-2',
+		                data: abc,
+		                xkey: 'y',
+		                ykeys: ['a', 'b'],
+		                labels: ['Series A', 'Series B'],
+		                hideHover: 'auto',
+		                resize: true
+		            });
+		           
+		  
+		        },
+
+		        initialization: function () {
+		            mainApp.main_fun();
+
+		        }
+
+		    }
+		    // Initializing ///
+
+		    $(document).ready(function () {
+		        mainApp.main_fun();
+		    });
+
+		})
+	</script>
 
 </html>
 <body>
 	<div id="wrapper">
+	
 	
 	<%@include file="/WEB-INF/views/include/menu.jsp"%>
 		<div id="page-wrapper">
@@ -44,6 +106,20 @@
 							<div class="panel-heading">Bar Chart Example</div>
 							<div class="panel-body">
 								<div id="morris-bar-chart"></div>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+				<div class="row">
+
+
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">Bar Chart Example</div>
+							<div class="panel-body">
+								<div id="morris-bar-chart-2"></div>
 							</div>
 						</div>
 					</div>

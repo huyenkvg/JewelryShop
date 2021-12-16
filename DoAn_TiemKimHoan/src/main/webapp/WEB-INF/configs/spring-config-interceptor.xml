@@ -25,13 +25,13 @@
 			<bean class="poly.interceptor.LoggerInterceptor" />
 		</mvc:interceptor>
 		 -->
-		 <mvc:interceptor>
-			<mvc:mapping path="/quanly/**"/> 
+		  <mvc:interceptor>
+			<mvc:mapping path="/**"/> 
 			
 			<mvc:exclude-mapping path="/quanly/dangnhap.htm"/> 
 			
 			<bean class="ptithcm.bean.LoginInterceptor" />
-		</mvc:interceptor>
+		</mvc:interceptor> 
 	</mvc:interceptors>
 
 </beans>
