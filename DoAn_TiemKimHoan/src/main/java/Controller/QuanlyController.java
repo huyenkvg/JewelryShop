@@ -62,36 +62,37 @@ public class QuanlyController {
 	@Autowired
 	BasePath basePath;
 
-	static NhanVien nhanvien = null;
-	String noww = java.time.LocalDate.now().toString();  
+	static NhanVien nhanvien = new NhanVien();
 	
+	String noww = java.time.LocalDate.now().toString();
+
 	@RequestMapping(value = "dangnhap", method = RequestMethod.GET)
 	public String dangNhap(ModelMap model) {
 		model.addAttribute(new User());
+
 		return "quanly/dangnhap";
 	}
 	// ==========================================================================================================
-	
 
-	
 	@RequestMapping(value = "dangnhap", method = RequestMethod.POST)
 	public String dangNhap(ModelMap model, @ModelAttribute("user") User user) {
 
 		TaiKhoanDangNhap tk = getTKDN(user.getUsername());
 		if (tk != null && tk.getMatKhai().trim().equals(user.getPassword().trim())
-				|| user.getUsername().equals("huyenkute") && user.getPassword().equals("123456")) {
+				) {
 			nhanvien = getNhanVienFromTKDN(user.getUsername());
-			if(nhanvien == null) 
+			if (nhanvien == null)
 				return "quanly/dangnhap";
 			UserLogin.tenDangNhap = user.getUsername();
 			UserLogin.matKhau = user.getPassword();
 			model.addAttribute("arrays", selectTopKhachHang(15));
 			model.addAttribute("arraysSP", selectTopSanPham(15));
+			noww = java.time.LocalDate.now().toString();
+			System.out.println("Lasst ACCESSS: " + noww);
 			model.addAttribute("lastAC", noww);
 			return "quanly/index";
 		}
 		UserLogin.clear();
-		
 		return "quanly/dangnhap";
 	}
 	// ==========================================================================================================
@@ -101,9 +102,11 @@ public class QuanlyController {
 //		System.out.println(user.getUsername());
 		model.addAttribute("arrays", selectTopKhachHang(15));
 		model.addAttribute("arraysSP", selectTopSanPham(15));
+		DoanhThu.thangs = layDoanhThu(2021).thangs;
 		model.addAttribute("doanhthu", DoanhThu.thangs);
 		return "quanly/index";
 	}
+
 	// ==========================================================================================================
 //	@RequestMapping("bieuDo")
 //	public String bieuDo(ModelMap model) {
@@ -133,19 +136,19 @@ public class QuanlyController {
 	public DoanhThu layDoanhThu(int nam) {
 		DoanhThu dt = new DoanhThu();
 		dt.setNam(nam);
-		List <HoaDon> dshd = searchAllHoaDon();
+		List<HoaDon> dshd = searchAllHoaDon();
 		for (HoaDon hoaDon : dshd) {
-			if(hoaDon.getNgay().getYear() == nam) {
+			if (hoaDon.getNgay().getYear() == nam) {
 				int mont = hoaDon.getNgay().getMonth();
-				if(hoaDon.getLoai().equals("Nhap"))
-					dt.thangs[mont].ra =hoaDon.getTongTien();
+				if (hoaDon.getLoai().equals("Nhap"))
+					dt.thangs[mont].ra = hoaDon.getTongTien();
 				else
-					dt.thangs[mont].vao =hoaDon.getTongTien();
-			 
+					dt.thangs[mont].vao = hoaDon.getTongTien();
+
 			}
 		}
 		return dt;
-		
+
 	}
 	// ==========================================================================================================
 
@@ -166,17 +169,21 @@ public class QuanlyController {
 		model.addAttribute("arrays", listNV);
 //		model.addAttribute("dsHoaDon", searchHoaDonTheoNV(nhanvien.getCmnd()));
 		model.addAttribute("display", "block");
+
+		model.addAttribute("lastAC", noww);
 		return "quanly/nhanvien";
 	}
+
 	@RequestMapping(value = "nhanvien", params = "newPage", method = RequestMethod.POST)
 	public String newnhanVien(ModelMap model) {
-		
+
 		List<NhanVien> listNV = getDsNhanVien();
 		model.addAttribute("btnStatus", "btnAdd");
 		model.addAttribute("nhanVienDangXem", new NhanVien());
 		model.addAttribute("arrays", listNV);
 		model.addAttribute("dsHoaDon", null);
 		model.addAttribute("display", "block");
+		model.addAttribute("lastAC", noww);
 		return "quanly/nhanvien";
 	}
 //	@RequestMapping("nhanvien")
@@ -198,6 +205,19 @@ public class QuanlyController {
 		model.addAttribute("display", "block");
 		String ngay = request.getParameter("date");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+		String check = CheckNhanVien(nv);
+		if (check != null) {
+			model.addAttribute("message", "Thêm Nhân Viên Thất Bại. " +check);
+			model.addAttribute("btnStatus", "btnAdd");
+			model.addAttribute("nhanVienDangXem", nv);
+			List<NhanVien> listNV = getDsNhanVien();
+			System.out.println("ThemNhanVien(): value = \"nhanvien\", params = \"maNhanVien\"");
+			model.addAttribute("arrays", listNV);
+			model.addAttribute("dsHoaDon", null);
+			model.addAttribute("lastAC", noww);
+			return "quanly/nhanvien";
+		}
 
 		Date date = null;
 		try {
@@ -242,7 +262,23 @@ public class QuanlyController {
 //		model.addAttribute("dsHoaDon", searchHoaDonTheoNV(nv.getCmnd()));
 		model.addAttribute("arrays", listNV);
 		model.addAttribute("dsHoaDon", null);
+		model.addAttribute("lastAC", noww);
 		return "quanly/nhanvien";
+	}
+
+	private String CheckNhanVien(NhanVien nv) {
+		// TODO Auto-generated method stub
+		List<NhanVien> nvs = getDsNhanVien();
+		for (NhanVien nhanVien : nvs) {
+			if (nv.getSdt().trim().equalsIgnoreCase(nhanVien.getSdt().trim()))
+				return "Số Điện Thoại này đã được sử dụng cho nhân viên " + nhanVien.getCmnd() + " - "
+						+ nhanVien.getHoTen();
+			else if (nv.getCmnd().trim().equalsIgnoreCase(nhanVien.getCmnd().trim()))
+				return "Số CMND/CCCD này đã được sử dụng cho nhân viên " + nhanVien.getHoTen();
+			else if (nv.getEmail().trim().equalsIgnoreCase(nhanVien.getEmail().trim()))
+				return "Email này đã được sửu dụng cho nhân viên " + nhanVien.getCmnd() + " - " + nhanVien.getHoTen();
+		}
+		return null;
 	}
 
 	@RequestMapping(value = "nhanvien", params = "btnUpdate", method = RequestMethod.POST)
@@ -292,17 +328,17 @@ public class QuanlyController {
 		model.addAttribute("arrays", listNV);
 		model.addAttribute("dsHoaDon", listHD);
 
+		model.addAttribute("lastAC", noww);
 		return "quanly/nhanvien";
 	}
+
 	@RequestMapping(value = "nhanvien/{id}.htm", params = "xoaNV")
 	public String xoaNhanVien(ModelMap model, @PathVariable("id") String id) {
 		model.addAttribute("display", "block");
-		
-		
+
 		NhanVien nvien = layNhanVien(id);
-		if(searchHoaDonTheoNV(nvien.getCmnd()).isEmpty())
-		{
-			if(deleteNhanVien(nvien) != -1) {
+		if (searchHoaDonTheoNV(nvien.getCmnd()).isEmpty()) {
+			if (deleteNhanVien(nvien) != -1) {
 				List<NhanVien> listNV = getDsNhanVien();
 				List<HoaDon> listHD = layHoaDonNhanVien(id);
 				model.addAttribute("btnStatus", "btnUpdate");
@@ -311,9 +347,10 @@ public class QuanlyController {
 				model.addAttribute("message", "Xóa Thành Công!!");
 				model.addAttribute("dsHoaDon", listHD);
 
+				model.addAttribute("lastAC", noww);
 				return "quanly/nhanvien";
 			}
-				
+
 		}
 		List<NhanVien> listNV = getDsNhanVien();
 		List<HoaDon> listHD = layHoaDonNhanVien(id);
@@ -323,7 +360,8 @@ public class QuanlyController {
 		model.addAttribute("nhanVienDangXem", nvien);
 		model.addAttribute("arrays", listNV);
 		model.addAttribute("dsHoaDon", listHD);
-		
+
+		model.addAttribute("lastAC", noww);
 		return "quanly/nhanvien";
 	}
 
@@ -375,6 +413,7 @@ public class QuanlyController {
 		model.addAttribute("arrays", listNV);
 
 		model.addAttribute("dsHoaDon", null);
+		model.addAttribute("lastAC", noww);
 		return "quanly/nhanvien";
 	}
 	// ==========================================================================================================
@@ -389,17 +428,20 @@ public class QuanlyController {
 		model.addAttribute("arrays", listKH);
 		model.addAttribute("display", "block");
 		model.addAttribute("dsHoaDon", searchHoaDonTheoKhach(khachhang.getSdt()));
+		model.addAttribute("lastAC", noww);
 		return "quanly/khachhang";
 	}
+
 	@RequestMapping(value = "khachhang", params = "newPage")
 	public String newkhachhang(ModelMap model) {
 		List<KhachHang> listKH = getDsKhachHang();
-		
+
 		model.addAttribute("btnStatus", "btnAdd");
 		model.addAttribute("khachHangDangXem", new KhachHang());
 		model.addAttribute("arrays", listKH);
 		model.addAttribute("display", "block");
 		model.addAttribute("dsHoaDon", null);
+		model.addAttribute("lastAC", noww);
 		return "quanly/khachhang";
 	}
 
@@ -409,7 +451,12 @@ public class QuanlyController {
 		System.out.println("ThemKhachHang" + khachhang.getHoTen());
 		String ngay = request.getParameter("date");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-dd-MM");
-
+		if (getKhachHang(khachhang.getSdt()) != null) {
+			model.addAttribute("khachHangDangXem", khachhang);
+			model.addAttribute("message", "Mã Khách Hàng Bị Trùng!");
+			model.addAttribute("btnStatus", "btnAdd");
+			model.addAttribute("display", "block");
+		}
 		Date date = null;
 		try {
 			date = formatter.parse(ngay);
@@ -420,21 +467,21 @@ public class QuanlyController {
 		System.out.print(ngay);
 		khachhang.setNgaySinh(date);
 		if (insertKhachHang((khachhang)) == 1) {
-
-			model.addAttribute("message", "Them Thanh Cong!");
+			model.addAttribute("message", "Thêm Khách Hàng Thành Công!");
 			model.addAttribute("btnStatus", "btnUpdate");
 			model.addAttribute("khachHangDangXem", getKhachHang(khachhang.getSdt()));
 			model.addAttribute("dsHoaDon", searchHoaDonTheoKhach(khachhang.getSdt()));
 			model.addAttribute("display", "block");
 		} else {
 			model.addAttribute("khachHangDangXem", new KhachHang());
-			model.addAttribute("message", "Them That Bai");
+			model.addAttribute("message", "Thêm Khách Hàng Thất Bại");
 			model.addAttribute("btnStatus", "btnAdd");
 			model.addAttribute("display", "block");
 		}
 
 		List<KhachHang> listKH = getDsKhachHang();
 		model.addAttribute("arrays", listKH);
+		model.addAttribute("lastAC", noww);
 		return "quanly/khachhang";
 	}
 
@@ -466,6 +513,7 @@ public class QuanlyController {
 		model.addAttribute("arrays", listKH);
 		model.addAttribute("dsHoaDon", searchHoaDonTheoKhach(kh.getSdt()));
 		model.addAttribute("display", "block");
+		model.addAttribute("lastAC", noww);
 		return "quanly/khachhang";
 	}
 
@@ -479,6 +527,7 @@ public class QuanlyController {
 //		model.addAttribute("khachHangDangXem", kh);
 //		model.addAttribute("arrays", listKH);
 //		model.addAttribute("dsHoaDon", searchHoaDonTheoKhach(kh.getSdt()));
+		model.addAttribute("lastAC", noww);
 		return "quanly/khachhang";
 	}
 
@@ -494,6 +543,7 @@ public class QuanlyController {
 		model.addAttribute("arrays", listKH);
 		model.addAttribute("display", "block");
 		model.addAttribute("dsHoaDon", searchHoaDonTheoKhach(kh.getSdt()));
+		model.addAttribute("lastAC", noww);
 		return "quanly/khachhang";
 	}
 
@@ -522,6 +572,7 @@ public class QuanlyController {
 
 		model.addAttribute("display", "block");
 		model.addAttribute("dsHoaDon", null);
+		model.addAttribute("lastAC", noww);
 		return "quanly/khachhang";
 	}
 
@@ -539,6 +590,7 @@ public class QuanlyController {
 		model.addAttribute("listCTDV", null);
 
 		model.addAttribute("display", "none");
+		model.addAttribute("lastAC", noww);
 		return "quanly/dichvu";
 	}
 
@@ -546,6 +598,20 @@ public class QuanlyController {
 	public String themDichVu(ModelMap model, @ModelAttribute("dichVuDangXem") DichVu dichvu,
 			@RequestParam("maDichVu") int idDv) {
 		System.out.println("ThemDichVu: " + dichvu.getMaDichVu() + " -- " + idDv);
+		if(getDichVu(idDv)!= null) {
+			List<DichVu> listDV = getDsDichVu();
+			model.addAttribute("btnStatus", "btnAdd");
+//				List<ChiTietDichVu> list = getDsCTDichVu();
+			model.addAttribute("listCTDV", searchDsCTDV(idDv));
+			model.addAttribute("display", "block");
+			model.addAttribute("dichVuDangXem", dichvu);
+			model.addAttribute("arrays", listDV);
+			model.addAttribute("lastAC", noww);
+			if (updateDichVu((dichvu)) == 1)
+				model.addAttribute("message", "mã Dịch Vụ Không Được Trùng");
+			return "quanly/dichvu";
+		}
+		
 		if (insertDichVu(dichvu) == 1)
 			model.addAttribute("message", "Them Thanh Cong!");
 		else {
@@ -563,6 +629,7 @@ public class QuanlyController {
 		model.addAttribute("display", "none");
 		model.addAttribute("dichVuDangXem", dichvu);
 		model.addAttribute("arrays", listDV);
+		model.addAttribute("lastAC", noww);
 		return "quanly/dichvu";
 	}
 
@@ -575,6 +642,7 @@ public class QuanlyController {
 		model.addAttribute("dichVuDangXem", new DichVu());
 		model.addAttribute("arrays", getDsDichVu());
 		model.addAttribute("display", "block");
+		model.addAttribute("lastAC", noww);
 		return "quanly/dichvu";
 	}
 
@@ -590,6 +658,8 @@ public class QuanlyController {
 			model.addAttribute("arrays", getDsDichVu());
 			model.addAttribute("display", "none");
 			model.addAttribute("messageBaoHanh", "Rất Tiếc! Mã Hóa �?ơn này không còn trong chế độ Bảo Hành");
+
+			model.addAttribute("lastAC", noww);
 			return "quanly/dichvu";
 		}
 		model.addAttribute("btnStatus", "btnAdd");
@@ -599,6 +669,7 @@ public class QuanlyController {
 		model.addAttribute("arrays", getDsDichVu());
 		model.addAttribute("display", "block");
 		model.addAttribute("messageTimKiem", "Sử dụng dịch vụ Bảo Hành đã được lưu!");
+		model.addAttribute("lastAC", noww);
 		return "quanly/dichvu";
 	}
 
@@ -616,6 +687,7 @@ public class QuanlyController {
 		model.addAttribute("dichVuDangXem", dichvu);
 		model.addAttribute("arrays", listDV);
 		model.addAttribute("display", "none");
+		model.addAttribute("lastAC", noww);
 		return "quanly/dichvu";
 	}
 
@@ -631,6 +703,7 @@ public class QuanlyController {
 		model.addAttribute("dichVuDangXem", dv);
 		model.addAttribute("arrays", listDV);
 		model.addAttribute("display", "none");
+		model.addAttribute("lastAC", noww);
 		return "quanly/dichvu";
 	}
 
@@ -658,6 +731,7 @@ public class QuanlyController {
 		model.addAttribute("listCTDV", getCTDichVu(madv));
 
 		model.addAttribute("listCTDV", null);
+		model.addAttribute("lastAC", noww);
 		return "quanly/dichvu";
 	}
 
@@ -668,12 +742,10 @@ public class QuanlyController {
 	@RequestMapping("canhan")
 	public String caNhan(HttpServletRequest request, ModelMap model) {
 		NhanVien nv = getNhanVien(nhanvien.getCmnd());
-		System.out.println("UpdateNhanVien(): value = \"nhanvien\", params = \"maNhanVien\"" + nv.getCmnd() + " - "
-				+ nv.getNgaySinh() + "  " + nv.getHoTen());
 		model.addAttribute("btnStatus", "btnUpdate");
 		model.addAttribute("nhanVienDangXem", nv);
-
 		model.addAttribute("photo", MailerController.getPhotoNhanVien("" + nv.getCmnd()));
+		model.addAttribute("lastAC", noww);
 		return "quanly/canhan";
 	}
 
@@ -683,7 +755,6 @@ public class QuanlyController {
 		model.addAttribute("display", "block");
 		String ngay = request.getParameter("date");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
 		Date date = null;
 		try {
 			date = formatter.parse(ngay);
@@ -708,6 +779,7 @@ public class QuanlyController {
 				+ " - " + nv.getNgaySinh());
 		model.addAttribute("nhanVienDangXem", getNhanVien(nv.getCmnd()));
 		model.addAttribute("photo", MailerController.getPhotoNhanVien(nhanvien.getCmnd()));
+		model.addAttribute("lastAC", noww);
 		return "quanly/canhan";
 	}
 	// ==========================================================================================================
@@ -756,6 +828,7 @@ public class QuanlyController {
 		model.addAttribute("listCTKM", searchChiTietGianGia(khuyenmai.getMaGiam()));
 		model.addAttribute("khuyenMaiDangXem", khuyenmai);
 		model.addAttribute("arrays", listkhuyenMai);
+		model.addAttribute("lastAC", noww);
 		return "quanly/khuyenmai";
 	}
 
@@ -772,6 +845,7 @@ public class QuanlyController {
 		model.addAttribute("listCTKM", searchChiTietGianGia(khuyenmai.getMaGiam()));
 		model.addAttribute("khuyenMaiDangXem", khuyenmai);
 		model.addAttribute("arrays", listkhuyenMai);
+		model.addAttribute("lastAC", noww);
 		return "quanly/khuyenmai";
 	}
 
@@ -787,18 +861,20 @@ public class QuanlyController {
 		model.addAttribute("khuyenMaiDangXem", km);
 		model.addAttribute("maKhuyenMai", km.getMaGiam());
 		model.addAttribute("arrays", listkhuyenMai);
+		model.addAttribute("lastAC", noww);
 		return "quanly/khuyenmai";
 	}
+
 	@RequestMapping(value = "khuyenmai", params = "luuKM")
-	public String xluukhuyenMai(ModelMap model, @RequestParam("maKhuyenMai")String id, @RequestParam("maSpham") int masp, @RequestParam("phanTram") int ptram) {
-		
+	public String xluukhuyenMai(ModelMap model, @RequestParam("maKhuyenMai") String id,
+			@RequestParam("maSpham") int masp, @RequestParam("phanTram") int ptram) {
+
 		KhuyenMai khuyenmai = getKhuyenMai(id);
-		if(khuyenmai== null)
-		{
+		if (khuyenmai == null) {
 			model.addAttribute("khuyenMaiDangXem", khuyenmai);
 			model.addAttribute("arrays", getDsKhuyenMai());
-			model.addAttribute("message","Mã Khuyến Mãi Không Tồn Tại");
-			
+			model.addAttribute("message", "Mã Khuyến Mãi Không Tồn Tại");
+
 			return "quanly/khuyenmai";
 		}
 		List<KhuyenMai> listkhuyenMai = getDsKhuyenMai();
@@ -808,20 +884,19 @@ public class QuanlyController {
 		ctkm.setMaHang(masp);
 		ctkm.setKhuyenMai(khuyenmai);
 		ctkm.setPhanTramGiam(ptram);
-		
-		if(insertChiTietGianGia(ctkm) != -1)
-		{
+
+		if (insertChiTietGianGia(ctkm) != -1) {
 
 			model.addAttribute("message", "Them Chi Tiet Khuyen Mai Thanh Cong!");
-		}
-		else {
+		} else {
 
 			model.addAttribute("message", "Them Chi Tiet Khuyen Mai That Bai!");
 		}
-		
+
 		model.addAttribute("listCTKM", searchChiTietGianGia(khuyenmai.getMaGiam()));
 		model.addAttribute("khuyenMaiDangXem", khuyenmai);
 		model.addAttribute("arrays", listkhuyenMai);
+		model.addAttribute("lastAC", noww);
 		return "quanly/khuyenmai";
 	}
 
@@ -848,6 +923,7 @@ public class QuanlyController {
 		model.addAttribute("arrays", listKhuyenMai);
 
 		model.addAttribute("listCTKM", null);
+		model.addAttribute("lastAC", noww);
 		return "quanly/khuyenmai";
 	}
 	// ==============================HOADON============================================================================
@@ -865,6 +941,7 @@ public class QuanlyController {
 		model.addAttribute("Status", "hoaDonMoi");
 		model.addAttribute("btnStatus", "btnAdd");
 //		model.addAttribute("alowSoLuong", "null");
+		model.addAttribute("lastAC", noww);
 		return "quanly/hoadon";
 	}
 
@@ -887,6 +964,7 @@ public class QuanlyController {
 		model.addAttribute("btnCTStatus", "them");
 		model.addAttribute("Status", "hoaDonMoi");
 		model.addAttribute("btnStatus", "btnAdd");
+		model.addAttribute("lastAC", noww);
 		return "quanly/hoadon";
 	}
 
@@ -1000,9 +1078,11 @@ public class QuanlyController {
 			model.addAttribute("btnStatus", "btnUpdate");
 			model.addAttribute("message", "Lập Hóa �?ơn Thành Công");
 			model.addAttribute("TongTien", tongtien);
+			model.addAttribute("lastAC", noww);
 			return "quanly/hoadon";
 
 		}
+		model.addAttribute("lastAC", noww);
 		return "quanly/hoadon";
 	}
 
@@ -1142,6 +1222,7 @@ public class QuanlyController {
 				model.addAttribute("Status", "hoaDonMoi");
 				model.addAttribute("btnStatus", "btnAdd");
 				model.addAttribute("messageChiTiet", "Số lượng sản phẩm trong kho không đủ.");
+				model.addAttribute("lastAC", noww);
 				return "quanly/hoadon";
 			}
 
@@ -1168,6 +1249,7 @@ public class QuanlyController {
 				model.addAttribute("Status", "hoaDonMoi");
 				model.addAttribute("btnStatus", "btnAdd");
 				model.addAttribute("messageChiTiet", "Số lượng sản phẩm ít nhất là 1.");
+				model.addAttribute("lastAC", noww);
 				return "quanly/hoadon";
 			}
 
@@ -1193,11 +1275,13 @@ public class QuanlyController {
 		model.addAttribute("btnCTStatus", "them");
 		model.addAttribute("Status", "hoaDonMoi");
 		model.addAttribute("btnStatus", "btnAdd");
+		model.addAttribute("lastAC", noww);
 		return "quanly/hoadon";
 	}
 
 	@RequestMapping(value = "hoadon/{id}.htm", params = "xemChiTiet")
 	public String xemHoaDon(ModelMap model, @PathVariable("id") Integer id) {
+		model.addAttribute("lastAC", noww);
 		return "quanly/hoadon";
 	}
 
@@ -1220,6 +1304,7 @@ public class QuanlyController {
 		List<ChiTietDathang> listCTDH = LayChiTietDonDatHang(listDDH.get(0).getMaDh());
 		model.addAttribute("listCTDH", listCTDH);
 		model.addAttribute("btnStatus", "btnAdd");
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlDatHang";
 	}
 
@@ -1247,6 +1332,7 @@ public class QuanlyController {
 		session.close();
 		model.addAttribute("arrays", listDDH);
 
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlDatHang";
 	}
 
@@ -1320,6 +1406,7 @@ public class QuanlyController {
 			model.addAttribute("btnStatus", "btnUpdate");
 			model.addAttribute("message", "Lập Hóa �?ơn Thành Công");
 			model.addAttribute("TongTien", tongtien);
+			model.addAttribute("lastAC", noww);
 			return "quanly/hoadon";
 
 		}
@@ -1338,6 +1425,7 @@ public class QuanlyController {
 		model.addAttribute("listCTDH", listCTDH);
 		model.addAttribute("btnStatus", "btnAdd");
 		model.addAttribute("message", "Lap Hoa Don That Bai");
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlDatHang";
 	}
 
@@ -1369,6 +1457,7 @@ public class QuanlyController {
 		query = session.createQuery(hql);
 		listDDH = query.list();
 		model.addAttribute("arrays", listDDH);
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlDatHang";
 	}
 
@@ -1409,6 +1498,7 @@ public class QuanlyController {
 		model.addAttribute("dsLoaiSP", getDsLoai());
 		model.addAttribute("dsPhoto", null);
 		model.addAttribute("listCTSZ", null);
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlKhoHang";
 	}
 
@@ -1423,6 +1513,7 @@ public class QuanlyController {
 		model.addAttribute("dsLoaiSP", getDsLoai());
 		model.addAttribute("dsPhoto", null);
 		model.addAttribute("listCTSZ", null);
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlKhoHang";
 	}
 
@@ -1433,10 +1524,11 @@ public class QuanlyController {
 		System.out.println("teen sanr phaamr: " + sanpham.getTenSp());
 		sanpham.setLoai(maLoai);
 		if (insertChiTietSanPham(sanpham) != -1) {
-
+			
 			model.addAttribute("message", "Them Thanh Cong!");
 			model.addAttribute("btnStatus", "btnUpdate");
 			MailerController.saveProductPhoto(sanpham.getMaSp() + "", photo, basePath);
+			
 		} else {
 			model.addAttribute("message", "Them That Bai");
 			model.addAttribute("btnStatus", "btnAdd");
@@ -1448,6 +1540,7 @@ public class QuanlyController {
 		model.addAttribute("btnSizeStatus", "themSize");
 		model.addAttribute("dsPhoto", MailerController.getDsPhoto("" + sanpham.getMaSp()));
 		model.addAttribute("listCTSZ", null);
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlKhoHang";
 	}
 
@@ -1461,6 +1554,7 @@ public class QuanlyController {
 		model.addAttribute("dsLoaiSP", getDsLoai());
 		model.addAttribute("dsPhoto", MailerController.getDsPhoto(id + ""));
 		model.addAttribute("listCTSZ", searchDSCTSize(id));
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlKhoHang";
 
 	}
@@ -1475,6 +1569,7 @@ public class QuanlyController {
 		model.addAttribute("dsLoaiSP", getDsLoai());
 		model.addAttribute("dsPhoto", MailerController.getDsPhoto(id + ""));
 		model.addAttribute("listCTSZ", searchDSCTSize(id));
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlKhoHang";
 
 	}
@@ -1534,6 +1629,7 @@ public class QuanlyController {
 		model.addAttribute("dsPhoto", MailerController.getDsPhoto("" + masanpham));
 		model.addAttribute("listCTSZ", searchDSCTSize(masanpham));
 
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlKhoHang";
 	}
 
@@ -1557,6 +1653,7 @@ public class QuanlyController {
 		model.addAttribute("dsPhoto", MailerController.getDsPhoto("" + masanpham));
 		model.addAttribute("listCTSZ", searchDSCTSize(masanpham));
 
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlKhoHang";
 	}
 
@@ -1578,6 +1675,7 @@ public class QuanlyController {
 			model.addAttribute("dsLoaiSP", getDsLoai());
 			model.addAttribute("dsPhoto", MailerController.getDsPhoto("" + masanpham));
 			model.addAttribute("listCTSZ", searchDSCTSize(masanpham));
+			model.addAttribute("lastAC", noww);
 			return "quanly/qlKhoHang";
 		}
 
@@ -1599,6 +1697,7 @@ public class QuanlyController {
 		model.addAttribute("dsPhoto", MailerController.getDsPhoto("" + masanpham));
 		model.addAttribute("listCTSZ", searchDSCTSize(masanpham));
 
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlKhoHang";
 	}
 
@@ -1620,6 +1719,7 @@ public class QuanlyController {
 		model.addAttribute("dsPhoto", MailerController.getDsPhoto("" + masanpham));
 		model.addAttribute("listCTSZ", searchDSCTSize(masanpham));
 
+		model.addAttribute("lastAC", noww);
 		return "quanly/qlKhoHang";
 	}
 	// ==========================================================================================================
@@ -1627,6 +1727,7 @@ public class QuanlyController {
 	@RequestMapping("thongke")
 	public String thongKe(ModelMap model) {
 		model.addAttribute("arrays", searchAllHoaDon());
+		model.addAttribute("lastAC", noww);
 		return "quanly/thongkeHD";
 	}
 	// ==========================================================================================================
@@ -1735,6 +1836,7 @@ public class QuanlyController {
 			return null;
 		return list.get(0);
 	}
+
 	public List<KhachHang> selectTopKhachHang(int topNumber) {
 		Session session = factory.openSession();
 		if (session == null)
@@ -1743,23 +1845,24 @@ public class QuanlyController {
 		Query query = session.createQuery(hql);
 //		query.setParameter("id", id);
 		List<KhachHang> list = query.list();
-		
+
 		session.close();
 		for (KhachHang khachHang : list) {
 			int x = (searchHoaDonTheoKhach(khachHang.getSdt()).size());
 			khachHang.setDanhGiaTiemNang(x);
 		}
 		Collections.sort(list, new Comparator<KhachHang>() {
-		    @Override
-		    public int compare(KhachHang lhs, KhachHang rhs) {
-		        // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-		        return lhs.getDanhGiaTiemNang() < rhs.getDanhGiaTiemNang() ? -1 : (lhs.getDanhGiaTiemNang() > rhs.getDanhGiaTiemNang()) ? 1 : 0;
-		    }
+			@Override
+			public int compare(KhachHang lhs, KhachHang rhs) {
+				// -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+				return lhs.getDanhGiaTiemNang() > rhs.getDanhGiaTiemNang() ? -1
+						: (lhs.getDanhGiaTiemNang() < rhs.getDanhGiaTiemNang()) ? 1 : 0;
+			}
 		});
-		list.subList(0, Math.min(Math.max(0,list.size()-1), topNumber));
-		return 
-				list.subList(0, Math.min(Math.max(0,list.size()-1), topNumber));
+		list.subList(0, Math.min(Math.max(0, list.size() - 1), topNumber));
+		return list.subList(0, Math.min(Math.max(0, list.size() - 1), topNumber));
 	}
+
 	public List<ChiTietSanPham> selectTopSanPham(int topNumber) {
 		Session session = factory.openSession();
 		if (session == null)
@@ -1769,20 +1872,21 @@ public class QuanlyController {
 //		query.setParameter("id", id);
 		List<ChiTietSanPham> list = query.list();
 		session.close();
-//		for (ChiTietSanPham : list) {
-//			int x = (searchHoaDonTheoKhach(khachHang.getSdt()).size());
-//			khachHang.setSlHD(x);
-//		}
-//		Collections.sort(list, new Comparator<KhachHang>() {
-//		    @Override
-//		    public int compare(KhachHang lhs, KhachHang rhs) {
-//		        // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-//		        return lhs.slHD > rhs.slHD ? -1 : (lhs.slHD < rhs.slHD) ? 1 : 0;
-//		    }
-//		});
-
 		
-		return list.subList(0, Math.min(Math.max(0,list.size()-1), topNumber));
+		Collections.sort(list, new Comparator<ChiTietSanPham>() {
+		    @Override
+		    public int compare(ChiTietSanPham lhs, ChiTietSanPham rhs) {
+				int x = getDiemDanhGia(lhs.getMaSp());
+				int y = getDiemDanhGia(rhs.getMaSp());
+				if(x > y) return 1;
+				if(x == y) return 0;
+				return -1;
+		        // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+		        
+		    }
+		});
+
+		return list.subList(0, Math.min(Math.max(0, list.size() - 1), topNumber));
 	}
 
 	public List<ChiTietHoaDon> getdDsCTHoaDon() {
@@ -1929,8 +2033,25 @@ public class QuanlyController {
 		query.setParameter("id", id);
 		DanhGia list = (DanhGia) query.list().get(0);
 		session.close();
-
+		
 		return list;
+	}
+	public int getDiemDanhGia(Integer id) {
+		Session session = factory.openSession();
+		if (session == null)
+			session = factory.openSession();
+		String hql = "FROM DanhGia where chiTietSanPham.maSp = :id";
+		int diem = 0;
+		Query query = session.createQuery(hql);
+		query.setParameter("id", id);
+		List<DanhGia> list = query.list();
+		session.close();
+		for (DanhGia danhGia : list) {
+			diem = danhGia.getDiemDanhGia()-3; 
+				
+		}
+		System.out.println("Điểm đánh giá sản phẩm: "+"("+id+")"+diem);
+		return diem;
 	}
 
 	public List<ChiTietSizeSp> getProducts() {
@@ -2206,9 +2327,7 @@ public class QuanlyController {
 	}
 
 	public Integer deleteNhanVien(NhanVien pd) {
-		
-		
-		
+
 		Session session = factory.openSession();
 		Transaction t = session.beginTransaction();
 
@@ -2307,6 +2426,9 @@ public class QuanlyController {
 			session.persist(pd);
 			t.commit();
 			x = pd.getMaSp();
+			pd.setAnh(x+".jpg");
+			updateChiTietSanPham(pd);
+			
 		} catch (Exception e) {
 			t.rollback();
 			e.printStackTrace();
@@ -2744,7 +2866,7 @@ public class QuanlyController {
 		Query query = session.createQuery(hql);
 		List<HoaDon> list = query.list();
 		session.close();
-		System.out.println("Thong ke: "+list.size());
+		System.out.println("Thong ke: " + list.size());
 		return list;
 	}
 
@@ -2760,7 +2882,6 @@ public class QuanlyController {
 		session.close();
 		return list;
 	}
-
 
 	public List<HoaDon> searchHoaDonTheoKhach(String idKH) {
 		Session session = factory.openSession();
@@ -2787,6 +2908,7 @@ public class QuanlyController {
 			return null;
 		return list.get(0);
 	}
+
 	public NhanVien getNhanVienFromTKDN(String username) {
 		Session session = factory.openSession();
 		if (session == null)
@@ -2980,6 +3102,5 @@ public class QuanlyController {
 		}
 		return 1;
 	}
-	
 
 }

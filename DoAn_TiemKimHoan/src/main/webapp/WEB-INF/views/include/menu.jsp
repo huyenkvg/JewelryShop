@@ -51,30 +51,7 @@
 
 
 					<li><a href="quanly/khachhang.htm"><i
-							class="fa fa-user-clock fa-3x"></i> Quản lý Khách Hàng</a> <!-- <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#">Second Level Link</a>
-                            </li>
-                            <li>
-                                <a href="#">Second Level Link</a>
-                            </li>
-                            <li>
-                                <a href="#">Second Level Link<span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-
-                                </ul>
-
-                            </li>
-                        </ul> --></li>
+							class="fa fa-user-clock fa-3x"></i> Quản lý Khách Hàng</a> 
 
 					<li><a href="quanly/nhanvien.htm"><i
 							class="fa fa-users fa-3x"></i> Quản lý Nhân viên</a></li>
@@ -95,9 +72,7 @@
 
 						</ul></li>
 
-					<li><a href="quanly/thongke.htm"><i
-							class="fa fa-table fa-3x"></i> Thống Kê <span class="fa arrow"></span></a>
-						</li>
+					
 					
 				</ul>
 

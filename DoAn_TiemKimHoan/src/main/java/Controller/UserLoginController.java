@@ -32,7 +32,7 @@ public class UserLoginController {
 		Account a = dao.login(username, password);
 		
 		if(a==null) {
-			rq.setAttribute("mess", "TÃªn Ä‘Äƒng nháº­p hoáº·c máº­t kháº©u sai!");
+			rq.setAttribute("mess", "Tên đăng nhập hoặc mật khẩu sai!");
 		}
 		else {
 			rp.sendRedirect("trang-chu.htm");

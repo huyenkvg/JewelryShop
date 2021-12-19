@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DoanhThu {
 	public int nam;
-	public static DThuThang[] thangs = {new DThuThang(1, 0, 7),new DThuThang(2, 0, 0),new DThuThang(3, 0, 0),new DThuThang(4, 0, 0),new DThuThang(5, 0, 0),new DThuThang(6, 0, 0),new DThuThang(7, 0, 0),new DThuThang(8, 0, 0),new DThuThang(9, 0, 0),new DThuThang(10, 0, 0),new DThuThang(11, 0, 0),new DThuThang(12, 0, 0),};
+	public static DThuThang[] thangs = {new DThuThang(1, 2, 7),new DThuThang(2, 0, 0),new DThuThang(3, 0, 0),new DThuThang(4, 0, 0),new DThuThang(5, 0, 0),new DThuThang(6, 0, 0),new DThuThang(7, 0, 0),new DThuThang(8, 0, 0),new DThuThang(9, 0, 0),new DThuThang(10, 0, 0),new DThuThang(11, 0, 0),new DThuThang(12, 0, 0),};
 	public int getNam() {
 		return nam;
 	}

@@ -47,7 +47,7 @@
 									TO CART</a>
 							</c:if>
 							<c:if test="${empty a  }">
-								<a href="login1" class="btn-add">ADD TO CART</a>
+								<a href="login1.htm" class="btn-add">ADD TO CART</a>
 							</c:if>
 						</article>
 

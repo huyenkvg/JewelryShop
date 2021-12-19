@@ -24,8 +24,8 @@
 </html>
 <body>
 	<div id="wrapper">
-	
-	<%@include file="/WEB-INF/views/include/menu.jsp"%>
+
+		<%@include file="/WEB-INF/views/include/menu.jsp"%>
 		<div id="page-wrapper">
 			<div id="page-inner">
 
@@ -41,32 +41,37 @@
 							<div class="panel-body">
 
 								<div class="col-md-5">
-
-									<h3>THÔNG TIN SẢN PHẨM</h3>
+									<div class="row">
+										<div class="row col-md-11">
+											<h3 style="margin-left: 12px;">THÔNG TIN SẢN PHẨM</h3>
+										</div>
+										<div class="row col-md-2">
+											<button name="newPage"
+												style="margin-left: 0px; margin-top: 15px;; margin-bottom: 0px; font-size: 18px">new</button>
+										</div>
+									</div>
 									<form:form action="quanly/qlKhoHang.htm"
 										modelAttribute="sanPhamDangXem" method="POST"
 										enctype="multipart/form-data">
 										<div class=" col-md-16">
 											<label>Mã Sản Phẩm</label>
-											<div class="col-md-9">
+											<div class="col-md-16">
 												<form:input path="maSp" name="maSanPham" type="number"
 													class="form-control" readonly="true" />
-											</div>
-											<div class="col-md-2">
-												<button name="newPage"
-													style="margin-left: 10px; margin-bottom: 0px; font-size: 18px">new</button>
 											</div>
 										</div>
 										<div>
 											<label class="control-label" for="inputSuccess">Tên
 												Sản Phẩm</label>
 											<form:input path="tenSp" class="form-control"
-												id="inputSuccess" />
+												id="inputSuccess" required="required"
+												placeholder="Nhập tên sản phẩm" />
 										</div>
 										<div>
 											<label class="control-label" for="inputSuccess">Mô tả</label>
 											<form:input path="moTa" class="form-control"
-												id="inputSuccess" />
+												id="inputSuccess" required="required"
+												placeholder="Nhập mô tả sản phẩm" />
 										</div>
 										<div class="form-group">
 											<label>Loại Sản Phẩm</label> <select name="item"
@@ -124,11 +129,11 @@
 												</c:if>
 
 												<input name="maSpham" type="hidden" class="form-control"
-													value="${sanPhamDangXem.maSp}" />
+													value="${sanPhamDangXem.maSp}" required="required" />
 
 												<div class="form-group col-md-8">
 													<label>Giá Tiền</label> <input name="giaSp" type="money"
-														class="form-control" value="${giaSp}" />
+														class="form-control" value="${giaSp}" required="required" />
 													<div>
 														<button type="submit" class="btn btn-success  "
 															style="margin-top: 10px; float: right;"
@@ -201,7 +206,7 @@
 												</div>
 
 
-											
+
 
 											</div>
 
@@ -216,9 +221,10 @@
 								<div class="form-group">
 									<c:forEach var="photo" items="${dsPhoto}">
 										<div class="col-md-3">
-										<img src="assets/Images/SanPham/${photo}" width="150"
-											height="150" />
-										<a href="quanly/qlDatHang/remove/${photo}.htm">xóa</a></div>
+											<img src="assets/Images/SanPham/${photo}" width="150"
+												height="150" /> <a
+												href="quanly/qlDatHang/remove/${photo}.htm">xóa</a>
+										</div>
 									</c:forEach>
 
 								</div>

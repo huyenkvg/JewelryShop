@@ -73,7 +73,7 @@
 								<div>
 									<label class="control-label" for="inputSuccess">Ngày
 										Sinh</label> <input type="date" name="date" class="form-control"
-										id="inputSuccess" value="${nhanVienDangXem.ngaySinh }" />
+										id="inputSuccess" value="${nhanVienDangXem.ngaySinh }" required='required' />
 								</div>
 								<div>
 									<label class="control-label" for="inputSuccess">Email</label>
@@ -230,6 +230,77 @@
 		</div>
 		<!-- /. PAGE WRAPPER  -->
 	</div>
+		<script>
+		//Truy cập vào các ô input
+
+		const usernameEle = document.getElementById('username');
+		const emailEle = document.getElementById('email');
+		const phoneEle = document.getElementById('phone');
+
+		// Validate dữ liệu trong các ô input và highlight
+		function checkValidate() {
+			let usernameValue = usernameEle.value;
+			let emailValue = emailEle.value;
+			let phoneValue = phoneEle.value;
+
+			let isCheck = true;
+
+			// Kiểm tra trường username
+			var regex = /^[a-zA-Z0-9@]+$/;
+			if (regex.test(usernameValue)) {
+				setError(usernameEle, 'Tên không được chứa các kí tự bất thường');
+				isCheck = false;
+				return isCheck;
+			} else {
+				setSuccess(usernameEle);
+			}
+
+			// Kiểm tra trường email
+/* 			if (emailValue == '') {
+				setError(emailEle, 'Email không được để trống');
+				isCheck = false;
+				return isCheck;
+			} else if (!isEmail(emailValue)) {
+				setError(emailEle, 'Email không đúng định dạng');
+				isCheck = false;
+				return isCheck;
+			} else {
+				setSuccess(emailEle);
+			} */
+
+			// Kiểm tra trường phone
+			if (phoneValue == '') {
+				setError(phoneEle, 'Số điện thoại không được để trống');
+				isCheck = false;
+				return isCheck;
+			} else if (!isPhone(phoneValue)) {
+				setError(phoneEle, 'Số điện thoại không đúng định dạng');
+				isCheck = false;
+			} else {
+				setSuccess(phoneEle);
+			}
+			
+
+			return isCheck;
+		}
+		function setError(ele, message) {
+			let parentEle = ele.parentNode;
+			parentEle.classList.add('error');
+			ele.style.color = "red";
+			parentEle.querySelector('small').innerText = message;
+		}
+		function setSuccess(ele) {
+			ele.parentNode.classList.add('success');
+		}
+		function isEmail(email) {
+			return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+					.test(email);
+		}
+
+		function isPhone(number) {
+			return /(84|0[3|5|7|8|9])+([0-9]{8})\b/.test(number);
+		}
+	</script>
 	<script type="text/javascript">
 		var frm = document.getElementById('frm');
 		function onSubmit() {

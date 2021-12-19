@@ -37,7 +37,7 @@ public class DanhGia implements Serializable {
     @JoinColumn(name = "MA_SP", referencedColumnName = "MA_SP", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private ChiTietSanPham chiTietSanPham;
-    @JoinColumn(name = "MAHD", referencedColumnName = "MA_HD")
+    @JoinColumn(name = "MA_HD", referencedColumnName = "MA_HD")
     @ManyToOne(optional = false)
     private HoaDon mahd;
     @JoinColumn(name = "MA_KHACH_HANG", referencedColumnName = "SDT", insertable = false, updatable = false)

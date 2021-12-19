@@ -47,14 +47,18 @@
 
 							<h3>THÔNG TIN Khách Hàng</h3>
 							<form:form action="quanly/khachhang.htm"
-								modelAttribute="khachHangDangXem" method="GET">
-								
+								modelAttribute="khachHangDangXem" method="GET"
+								onsubmit="return checkValidate()">
+
 								<c:if test="${btnStatus == 'btnAdd'}">
 									<div class="form-group">
 										<label class="control-label" for="inputSuccess">Số
 											điện thoại</label>
-										<form:input path="sdt" name="maKhachHang" class="form-control"
-											id="inputSuccess"  required="required" />
+										<div class="input-row">
+											<form:input path="sdt" name="maKhachHang"
+												class="form-control" id="phone" required="required" />
+											<small style="color: red; font: 50px;"></small>
+										</div>
 									</div>
 								</c:if>
 
@@ -68,34 +72,49 @@
 								<div>
 									<label class="control-label" for="inputSuccess">Họ và
 										Tên</label>
-									<form:input path="hoTen" class="form-control" id="inputSuccess" required="required"/>
+									<div class="input-row">
+										<form:input path="hoTen" class="form-control" id="username"
+											required="required" />
+										<small style="color: red; font: 50px;"></small>
+									</div>
 								</div>
 								<div>
-									<label class="control-label" for="inputSuccess" >Địa chỉ
+									<label class="control-label" for="inputSuccess">Địa chỉ
 									</label>
 									<form:input path="diaChi" class="form-control"
-										id="inputSuccess"  required="required"/>
+										id="inputSuccess" required="required" />
 								</div>
 								<div>
 									<label class="control-label" for="inputSuccess">Ngày
 										Sinh</label> <input type="date" name="date" class="form-control"
-										id="inputSuccess"  required="required"/>
+										id="inputSuccess" required="required"
+										value="${khachHangDangXem.ngaySinh}" />
 								</div>
 								<div>
 									<label class="control-label" for="inputSuccess">Lưu Ý</label>
-									<form:input path="luuY" class="form-control" id="inputSuccess"  required="required"/>
-								</div>
-								<div>
-									<label class="control-label" for="inputSuccess" >đánh
-										giá tiềm năng</label>
-									<form:input path="danhGiaTiemNang" class="form-control"
-										id="inputSuccess"  required="required"/>
+									<form:input path="luuY" class="form-control" id="inputSuccess"
+										required="required" />
 								</div>
 
+								<div class="form-group" style="color: blue;">
+									<br /> <label class="control-label" for="inputSuccess"
+										style="color: black;">Đánh giá tiềm năng Khách Hàng</label> <br />
+									</label class="control-label" for="inputSuccess"> 0 - Khách Mới
+									<form:radiobutton path="danhGiaTiemNang" value="0" />
+									<br /> 1 - Khách Hàng tiềm năng
+									<form:radiobutton path="danhGiaTiemNang" value="1" />
+									<br /> 2 - Khách Hàng thân thiết
+									<form:radiobutton path="danhGiaTiemNang" value="2" />
+									<br /> 3 - Khách VIP
+									<form:radiobutton path="danhGiaTiemNang" value="3" />
+									<br /> 4 - Khách Hàng Cảnh Cáo
+									<form:radiobutton path="danhGiaTiemNang" value="4" />
+								</div>
 
 
 								<div>
-									<label class="danger-label"> ${message}</label>
+									<label class="danger-label" style="color: red;">
+										${message}</label>
 								</div>
 								<div>
 									<button type="submit" name="${btnStatus}"
@@ -159,7 +178,7 @@
 											${messageTimKiem}</label>
 									</c:if>
 									<input name="sdt" type="text" class="form-control"
-										id="inputSuccess"  required="required">
+										id="inputSuccess" required="required">
 								</div>
 
 								<div class="form-group col-md-1 ">
@@ -207,6 +226,77 @@
 		</div>
 		<!-- /. PAGE WRAPPER  -->
 	</div>
+	<script>
+		//Truy cập vào các ô input
+
+		const usernameEle = document.getElementById('username');
+		const emailEle = document.getElementById('email');
+		const phoneEle = document.getElementById('phone');
+
+		// Validate dữ liệu trong các ô input và highlight
+		function checkValidate() {
+			let usernameValue = usernameEle.value;
+			let emailValue = emailEle.value;
+			let phoneValue = phoneEle.value;
+
+			let isCheck = true;
+
+			// Kiểm tra trường username
+			var regex = /[a-zA-Z]+$/;
+			if (!regex.test(usernameValue)) {
+				setError(usernameEle,
+						'Tên không được chứa các kí tự bất thường');
+				isCheck = false;
+				return isCheck;
+			} else {
+				setSuccess(usernameEle);
+			}
+
+			// Kiểm tra trường email
+			/* 			if (emailValue == '') {
+			 setError(emailEle, 'Email không được để trống');
+			 isCheck = false;
+			 return isCheck;
+			 } else if (!isEmail(emailValue)) {
+			 setError(emailEle, 'Email không đúng định dạng');
+			 isCheck = false;
+			 return isCheck;
+			 } else {
+			 setSuccess(emailEle);
+			 } */
+
+			// Kiểm tra trường phone
+			if (phoneValue == '') {
+				setError(phoneEle, 'Số điện thoại không được để trống');
+				isCheck = false;
+				return isCheck;
+			} else if (!isPhone(phoneValue)) {
+				setError(phoneEle, 'Số điện thoại không đúng định dạng');
+				isCheck = false;
+			} else {
+				setSuccess(phoneEle);
+			}
+
+			return isCheck;
+		}
+		function setError(ele, message) {
+			let parentEle = ele.parentNode;
+			parentEle.classList.add('error');
+			ele.style.color = "red";
+			parentEle.querySelector('small').innerText = message;
+		}
+		function setSuccess(ele) {
+			ele.parentNode.classList.add('success');
+		}
+		function isEmail(email) {
+			return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+					.test(email);
+		}
+
+		function isPhone(number) {
+			return /(84|0[3|5|7|8|9])+([0-9]{8})\b/.test(number); 
+		}
+	</script>
 
 
 	<!-- /. WRAPPER  -->

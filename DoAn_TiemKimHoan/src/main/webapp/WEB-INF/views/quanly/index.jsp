@@ -20,67 +20,7 @@
 <title>CỬA HÀNG TRANG SỨC</title>
 <base href="${pageContext.servletContext.contextPath}/">
 </head>
-<script>
-		$(document).ready(function () {
-		    "use strict";
-		    var chart_data;
-		    var mainApp = {
-				
-		        main_fun: function () {
-		            /*====================================
-		            METIS MENU 
-		            ======================================*/
-		            $('#main-menu').metisMenu();
 
-		            /*====================================
-		              LOAD APPROPRIATE MENU BAR
-		           ======================================*/
-		            $(window).bind("load resize", function () {
-		                if ($(this).width() < 768) {
-		                    $('div.sidebar-collapse').addClass('collapse')
-		                } else {
-		                    $('div.sidebar-collapse').removeClass('collapse')
-		                }
-		            });
-
-		            /*====================================
-		            MORRIS BAR CHART
-		         ======================================*/
-		         	var abc = [];
-			     	<c:forEach var="c" items="${doanhthu}">
-			 	    	var yy = ${c.thang};
-			 			var aa = ${c.ra};
-			 			var bb = ${c.vao};
-			 			abc.push({"y": yy, "a": aa, "b": bb});
-			 			console.log(abc);
-			     	</c:forEach>
-		            Morris.Bar({
-		                element: 'morris-bar-chart-2',
-		                data: abc,
-		                xkey: 'y',
-		                ykeys: ['a', 'b'],
-		                labels: ['Series A', 'Series B'],
-		                hideHover: 'auto',
-		                resize: true
-		            });
-		           
-		  
-		        },
-
-		        initialization: function () {
-		            mainApp.main_fun();
-
-		        }
-
-		    }
-		    // Initializing ///
-
-		    $(document).ready(function () {
-		        mainApp.main_fun();
-		    });
-
-		})
-	</script>
 
 </html>
 <body>
@@ -98,7 +38,7 @@
 
 				<hr />
 
-				<div class="row">
+				<!-- <div class="row">
 
 
 					<div class="col-md-12 col-sm-12 col-xs-12">
@@ -111,7 +51,7 @@
 					</div>
 
 
-				</div>
+				</div> -->
 				<div class="row">
 
 
@@ -226,8 +166,49 @@
 		src="<c:url value='/assets/js/morris/raphael-2.1.0.min.js' />"></script>
 	<script type="text/javascript"
 		src="<c:url value='/assets/js/morris/morris.js' />"></script>
-	<!-- CUSTOM SCRIPTS -->
-	<script type="text/javascript"
-		src="<c:url value='/assets/js/custom.js' />"></script>
+	<script type="text/javascript">
+    $(document).ready(function () { 
+	    "use strict";
+	    var chart_data;
+			
+        /*====================================
+        METIS MENU 
+        ======================================*/
+        $('#main-menu').metisMenu();
+
+        /*====================================
+          LOAD APPROPRIATE MENU BAR
+       ======================================*/
+        $(window).bind("load resize", function () {
+            if ($(this).width() < 768) {
+                $('div.sidebar-collapse').addClass('collapse')
+            } else {
+                $('div.sidebar-collapse').removeClass('collapse')
+            }
+        });
+
+        /*====================================
+        MORRIS BAR CHART
+     ======================================*/
+     	var abc = [];
+     	<c:forEach var="c" items="${doanhthu}">
+ 	    	var yy = ${c.thang};
+ 			var aa = ${c.ra};
+ 			var bb = ${c.vao};
+ 			abc.push({"y": yy, "a": aa, "b": bb});
+     	</c:forEach>
+     	console.log(abc);
+        Morris.Bar({
+            element: 'morris-bar-chart-2',
+            data: abc,
+            xkey: 'y',
+            ykeys: ['a', 'b'],
+            labels: ['Series A', 'Series B'],
+            hideHover: 'auto',
+            resize: true
+        });
+    });
+</script>
+
 </body>
 </html>

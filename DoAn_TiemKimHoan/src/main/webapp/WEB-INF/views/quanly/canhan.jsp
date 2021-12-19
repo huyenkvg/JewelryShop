@@ -22,8 +22,8 @@
 </head>
 <body>
 	<div id="wrapper">
-	
-	<%@include file="/WEB-INF/views/include/menu.jsp"%>
+
+		<%@include file="/WEB-INF/views/include/menu.jsp"%>
 		<div id="page-wrapper">
 			<div id="page-inner">
 				<div class="row">
@@ -46,7 +46,8 @@
 
 										<h4>THÔNG TIN NHÂN VIÊN</h4>
 										<form:form action="quanly/canhan.htm"
-											modelAttribute="nhanVienDangXem" method="POST" enctype="multipart/form-data">
+											modelAttribute="nhanVienDangXem" method="POST"
+											enctype="multipart/form-data" onsubmit='return checkValidate()'>
 
 											<div class="form-group">
 												<label>CMND</label>
@@ -56,24 +57,26 @@
 											<div>
 												<label class="control-label" for="inputSuccess">Họ
 													và Tên</label>
-												<form:input path="hoTen" class="form-control"
-													id="inputSuccess" />
+												<div class="input-row">
+													<form:input path="hoTen" id="username"  class="form-control" />
+													<small style="color: red; font: 50px; "></small>
+												</div>
 											</div>
-											<div>
+											<div class="input-row">
 												<label class="control-label" for="inputSuccess">Số
 													Điện Thoại</label>
-												<form:input path="sdt" class="form-control"
-													id="inputSuccess" />
+												<form:input path="sdt" id="phone" class="form-control" />
+												<small style="color: red; font: 50px; "></small>
 											</div>
 											<div>
 												<label class="control-label" for="inputSuccess">Ngày
 													Sinh</label> <input type="date" name="date" class="form-control"
 													id="inputSuccess" value="${nhanVienDangXem.ngaySinh }" />
 											</div>
-											<div>
+											<div class="input-row">
 												<label class="control-label" for="inputSuccess">Email</label>
-												<form:input path="email" class="form-control"
-													id="inputSuccess" />
+												<form:input path="email" id="email" class="form-control" />
+												<small style="color: red; font: 50px; "></small>
 											</div>
 											<div class="form-group">
 
@@ -83,8 +86,7 @@
 												<form:radiobutton path="gioiTinh" value="false" />
 											</div>
 											<div class="form-group">
-												<label>Thêm Hình Ảnh</label> <input type="file"
-													name="photo" />
+												<label>Thêm Hình Ảnh</label> <input type="file" name="photo" />
 											</div>
 
 											<div>
@@ -93,8 +95,9 @@
 													${message}</label>
 											</div>
 											<div style="float: right;">
-												<button type="submit" class="btn btn-success"
-													name="btnUpdate">Lưu</button>
+											
+												<input type="submit" class="button btn btn-success"  value="Lưu" name="btnUpdate" id="btn-register"/>
+											
 												<button type="reset" class="btn btn-primary">Hoàn
 													tác</button>
 											</div>
@@ -114,112 +117,7 @@
 
 										</div>
 									</div>
-									<!-- 
-									<div class="col-md-6">
-										<h3>Disabled Form State Examples</h3>
-										<form role="form">
-											<fieldset disabled="disabled">
-												<div class="form-group">
-													<label for="disabledSelect">Disabled input</label> <input
-														class="form-control" id="disabledInput" type="text"
-														placeholder="Disabled input" disabled />
-												</div>
-												<div class="form-group">
-													<label for="disabledSelect">Disabled select </label> <select
-														id="disabledSelect" class="form-control">
-														<option>Disabled select</option>
-													</select>
-												</div>
-												<div class="checkbox">
-													<label> <input type="checkbox" />Disabled Checkbox
-													</label>
-												</div>
-												<button type="submit" class="btn btn-primary">Disabled
-													Button</button>
-											</fieldset>
-										</form>
-										<h3>Validation State Examples</h3>
-										<form role="form">
-											<div class="form-group has-success">
-												<label class="control-label" for="inputSuccess">Input
-													with success</label> <input type="text" class="form-control"
-													id="inputSuccess">
-											</div>
-											<div class="form-group has-warning">
-												<label class="control-label" for="inputWarning">Input
-													with warning</label> <input type="text" class="form-control"
-													id="inputWarning">
-											</div>
-											<div class="form-group has-error">
-												<label class="control-label" for="inputError">Input
-													with error</label> <input type="text" class="form-control"
-													id="inputError">
-											</div>
-										</form>
-										<h3>Input Group Examples</h3>
-										<form role="form">
-											<div class="form-group input-group">
-												<span class="input-group-addon">@</span> <input type="text"
-													class="form-control" placeholder="Username">
-											</div>
-											<div class="form-group input-group">
-												<input type="text" class="form-control"> <span
-													class="input-group-addon">.00</span>
-											</div>
-											<div class="form-group input-group">
-												<span class="input-group-addon"><i class="fa fa-eur"></i>
-												</span> <input type="text" class="form-control"
-													placeholder="Font Awesome Icon">
-											</div>
-											<div class="form-group input-group">
-												<span class="input-group-addon">$</span> <input type="text"
-													class="form-control"> <span
-													class="input-group-addon">.00</span>
-											</div>
-											<div class="form-group input-group">
-												<input type="text" class="form-control"> <span
-													class="input-group-btn">
-													<button class="btn btn-default" type="button">
-														<i class="fa fa-search"></i>
-													</button>
-												</span>
-											</div>
-										</form>
-										<h3>Different Size Input Groups</h3>
-										<form role="form">
-											<div class=" form-group input-group input-group-lg">
-												<span class="input-group-addon">@</span> <input type="text"
-													class="form-control" placeholder="Username" />
-											</div>
 
-											<div class="form-group input-group">
-												<span class="input-group-addon">@</span> <input type="text"
-													class="form-control" placeholder="Username" />
-											</div>
-
-											<div class="form-group input-group input-group-sm">
-												<span class="input-group-addon">@</span> <input type="text"
-													class="form-control" placeholder="Username" />
-											</div>
-
-										</form>
-										<h3>Different Size Input Groups</h3>
-										<form role="form">
-											<div class="input-group">
-												<span class="form-group input-group-btn">
-													<button class="btn btn-default" type="button">Go!</button>
-												</span> <input type="text" class="form-control" />
-											</div>
-											<br />
-											<div class="input-group">
-
-												<input type="text" class="form-control" /> <span
-													class="form-group input-group-btn">
-													<button class="btn btn-default" type="button">Go!</button>
-												</span>
-											</div>
-										</form>
-									</div> -->
 								</div>
 							</div>
 						</div>
@@ -234,9 +132,79 @@
 		<!-- /. PAGE WRAPPER  -->
 	</div>
 	<!-- /. WRAPPER  -->
+	<script>
+		//Truy cập vào các ô input
+
+		const usernameEle = document.getElementById('username');
+		const emailEle = document.getElementById('email');
+		const phoneEle = document.getElementById('phone');
 
 
+		// Validate dữ liệu trong các ô input và highlight
+		function checkValidate() {
+			let usernameValue = usernameEle.value.trim();
+			let emailValue = emailEle.value.trim();
+			let phoneValue = phoneEle.value.trim();
 
+			let isCheck = true;
+
+			// Kiểm tra trường username
+			var regex = /[a-zA-Z]+$/;
+			if (!regex.test(usernameValue)) {
+				setError(usernameEle, 'Tên không được chứa các kí tự bất thường');
+				isCheck = false;
+				return isCheck;
+			} else{
+				setSuccess(usernameEle);
+			}
+
+			// Kiểm tra trường email
+			if (emailValue == '') {
+				setError(emailEle, 'Email không được để trống');
+				isCheck = false;
+				return isCheck;
+			} else if (!isEmail(emailValue)) {
+				setError(emailEle, 'Email không đúng định dạng');
+				isCheck = false;
+				return isCheck;
+			} else {
+				setSuccess(emailEle);
+			}
+
+			// Kiểm tra trường phone
+			if (phoneValue == '') {
+				setError(phoneEle, 'Số điện thoại không được để trống');
+				isCheck = false;
+				return isCheck;
+			} else if (!isPhone(phoneValue)) {
+				setError(phoneEle, 'Số điện thoại không đúng định dạng');
+				isCheck = false;
+			} else {
+				setSuccess(phoneEle);
+			}
+			
+			return isCheck;
+		}
+		function setError(ele, message) {
+			let parentEle = ele.parentNode;
+			parentEle.classList.add('error');
+			ele.style.color = "red";
+			parentEle.querySelector('small').innerText = message;
+		}
+		function setSuccess(ele) {
+			ele.parentNode.classList.add('success');
+		}
+		function isEmail(email) {
+			return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+					.test(email);
+		}
+
+		function isPhone(number) {
+			return /(84|0[3|5|7|8|9])+([0-9]{8})\b/.test(number);
+		}
+	</script>
+	
+	
 	<!-- /. WRAPPER  -->
 	<!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
 	<!-- JQUERY SCRIPTS -->

@@ -121,8 +121,20 @@
                             <div class="form-group test">
                                 <div class="col-xs-12">
                                 
-                                <button type="submit" class="btn btn-primary btn-submit-fix" onclick="alert('Thanh toán thành công!')">Thanh toán</button> 
-            
+                                <c:choose>
+  <c:when test="${DonDatHang.diaChiNhanHang==null}">
+   <button type="submit" class="btn btn-primary btn-submit-fix" onclick="alert('Thanh toán thất bại!')">Thanh toán</button>
+  </c:when>
+
+  <c:when test="${DonDatHang.diaChiNhanHang !=null}">
+    <button type="submit" class="btn btn-primary btn-submit-fix" onclick="alert('Thanh toán thành công!')">Thanh toán</button> 
+  </c:when>
+</c:choose>
+                              <%--   <c:if test="${DonDatHang.diaChiNhanHang==null}"> <button type="submit" class="btn btn-primary btn-submit-fix" onclick="alert('Thanh toán thất bại!')">Thanh toán</button> </c:if>
+                                
+            					<c:if test="${DonDatHang.diaChiNhanHang !=null">
+            					<button type="submit" class="btn btn-primary btn-submit-fix" onclick="alert('Thanh toán thành công!')">Thanh toán</button> 
+            					</c:if> --%>
                                
                                 
  								                               </div>
