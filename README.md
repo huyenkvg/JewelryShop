@@ -1,2 +1,2 @@
 # JewelryShop
- Đồ Án Lập Trình Weba
+ Đồ Án Lập Trình Web
